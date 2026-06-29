@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f6f2">
+  <title>debt-tracker</title>
+  <link rel="preconnect" href="https://api.fontshare.com">
+  <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&f[]=cabinet-grotesk@500,700,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <div class="app-shell">
+    <header class="topbar shell-card" aria-label="Application header">
+      <div class="topbar-row">
+        <button id="backBtn" class="icon-btn" type="button" aria-label="Go back" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18 9 12l6-6"/></svg>
+        </button>
+
+        <div class="brand-wrap">
+          <div class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 64 64" role="img" aria-label="Debt Tracker logo">
+              <rect x="10" y="12" width="44" height="40" rx="14" stroke="currentColor" stroke-width="4" fill="none"/>
+              <path d="M22 25h20M22 33h12M22 41h20" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="title-stack">
+            <p class="eyebrow" id="routeEyebrow">People overview</p>
+            <h1 class="page-title" id="routeTitle">Debt Tracker</h1>
+          </div>
+        </div>
+
+        <div class="topbar-actions">
+          <button id="archiveQuickBtn" class="icon-btn" type="button" aria-label="Open archive">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M6 7l1 12h10l1-12M9 7V5h6v2"/></svg>
+          </button>
+          <button id="themeToggle" class="icon-btn" type="button" aria-label="Switch colour theme">
+            <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
+            <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7.5 7.5 0 0 0 21 12.79Z"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <section class="hero-panel hero-grid shell-inner" aria-label="Summary panel">
+        <div class="hero-copy">
+          <p class="hero-label">Outstanding total</p>
+          <p class="headline-amount" id="grandTotal">£0.00</p>
+          <p class="hero-subtext muted copy-tight" id="heroSubtext">0 people, 0 active debts, 0 archived.</p>
+        </div>
+        <div class="hero-chips" id="heroChips" aria-label="Summary chips"></div>
+      </section>
+    </header>
+
+    <section class="toolbar shell-card" aria-label="Search and sort">
+      <label class="search-wrap shell-inner" for="globalSearch">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span class="sr-only">Search debts and people</span>
+        <input id="globalSearch" type="search" placeholder="Search people, groups, or notes" autocomplete="off">
+      </label>
+      <div class="toolbar-row">
+        <label class="select-wrap shell-inner" for="sortSelect">
+          <span>Sort by</span>
+          <select id="sortSelect">
+            <option value="largest">Largest first</option>
+            <option value="smallest">Smallest first</option>
+            <option value="name">Name</option>
+            <option value="recent">Newest</option>
+            <option value="oldest">Oldest</option>
+          </select>
+        </label>
+        <button class="primary-btn" id="fabBtn" type="button">Create debt</button>
+      </div>
+    </section>
+
+    <main id="main" class="main-content" tabindex="-1">
+      <div id="viewRoot" class="view-root"></div>
+    </main>
+
+    <nav class="bottom-nav shell-card" aria-label="Primary navigation">
+      <button class="bottom-nav-item" type="button" data-nav="#/dashboard">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12 12 4l9 8"/><path d="M5 10v10h14V10"/></svg>
+        <span>Home</span>
+      </button>
+      <button class="bottom-nav-item" type="button" data-nav="#/archive">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M6 7l1 12h10l1-12M9 7V5h6v2"/></svg>
+        <span>Archive</span>
+      </button>
+      <button class="bottom-nav-item" id="addNavBtn" type="button" data-nav="#/add">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+        <span>Add</span>
+      </button>
+    </nav>
+  </div>
+
+  <div class="sheet-backdrop" id="sheetBackdrop" hidden>
+    <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+      <div class="sheet-handle" aria-hidden="true"></div>
+      <div class="sheet-header">
+        <div>
+          <p class="eyebrow" id="sheetEyebrow">Create</p>
+          <h2 id="sheetTitle">Add debt</h2>
+        </div>
+        <button class="icon-btn" id="sheetCloseBtn" type="button" aria-label="Close form">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <form id="debtForm" class="sheet-form">
+        <input type="hidden" id="modeInput" value="create">
+        <input type="hidden" id="personIdInput">
+        <input type="hidden" id="groupPersonIdInput">
+        <input type="hidden" id="debtIdInput">
+        <div class="field-grid">
+          <label class="field">
+            <span>Person</span>
+            <input id="personNameInput" type="text" maxlength="40" placeholder="e.g. Jamie" required>
+          </label>
+          <label class="field">
+            <span>Avatar</span>
+            <input id="avatarInput" type="text" maxlength="4" placeholder="🙂 or JD">
+          </label>
+        </div>
+        <div class="field-grid">
+          <label class="field">
+            <span>Group</span>
+            <input id="groupInput" type="text" maxlength="40" placeholder="e.g. Bills, Holiday, Tools" required>
+          </label>
+          <label class="field">
+            <span>Amount (£)</span>
+            <input id="amountInput" type="number" step="0.01" min="0.01" inputmode="decimal" required>
+          </label>
+        </div>
+        <div class="field-grid">
+          <label class="field">
+            <span>Created</span>
+            <input id="dateInput" type="date">
+          </label>
+          <div class="field field-static">
+            <span>State</span>
+            <div class="static-chip">Tracked immediately</div>
+          </div>
+        </div>
+        <label class="field">
+          <span>Notes</span>
+          <textarea id="notesInput" maxlength="500" placeholder="Add context, references, or reminders"></textarea>
+        </label>
+        <div class="sheet-actions">
+          <button type="button" class="ghost-btn" id="cancelSheetBtn">Cancel</button>
+          <button type="submit" class="primary-btn">Save debt</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <div class="sheet-backdrop" id="paymentBackdrop" hidden>
+    <section class="sheet mini-sheet" id="paymentSheet" role="dialog" aria-modal="true" aria-labelledby="paymentTitle">
+      <div class="sheet-handle" aria-hidden="true"></div>
+      <div class="sheet-header">
+        <div>
+          <p class="eyebrow">Payment</p>
+          <h2 id="paymentTitle">Add part payment</h2>
+        </div>
+        <button class="icon-btn" id="paymentCloseBtn" type="button" aria-label="Close payment form">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <form id="paymentForm" class="sheet-form">
+        <input type="hidden" id="paymentDebtId">
+        <label class="field">
+          <span>Amount paid (£)</span>
+          <input id="paymentAmountInput" type="number" step="0.01" min="0.01" inputmode="decimal" required>
+        </label>
+        <label class="field">
+          <span>Date</span>
+          <input id="paymentDateInput" type="date">
+        </label>
+        <div class="sheet-actions">
+          <button type="button" class="ghost-btn" id="cancelPaymentBtn">Cancel</button>
+          <button type="submit" class="primary-btn">Apply payment</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <div id="toastRegion" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+  <div class="confirm-backdrop" id="confirmBackdrop" hidden>
+    <section class="confirm-card shell-card" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <h2 id="confirmTitle">Confirm action</h2>
+      <p id="confirmText" class="muted"></p>
+      <div class="confirm-actions">
+        <button class="ghost-btn" id="confirmCancelBtn" type="button">Cancel</button>
+        <button class="danger-btn" id="confirmOkBtn" type="button">Continue</button>
+      </div>
+    </section>
+  </div>
+
+  <script src="app.js" defer></script>
+</body>
+</html>
